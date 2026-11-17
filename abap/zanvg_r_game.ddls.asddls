@@ -8,7 +8,7 @@ define root view entity ZANVG_R_GAME
       player                as Player,
       secret_word           as SecretWord,
       case
-        when status <> 'I' then secret_word
+          when status <> 'I' then secret_word
       end                   as Solution,
       status                as Status,
       attempts              as Attempts,

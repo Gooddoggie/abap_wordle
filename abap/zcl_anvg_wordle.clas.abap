@@ -34,6 +34,17 @@ CLASS zcl_anvg_wordle DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
+    CONSTANTS word_length TYPE i VALUE 5.
+    CONSTANTS max_attempts TYPE i VALUE 6.
+    CONSTANTS crossed_off TYPE c LENGTH 1 VALUE '-'.
+    CONSTANTS:
+      BEGIN OF mark,
+        correct   TYPE c LENGTH 1 VALUE 'G',
+        misplaced TYPE c LENGTH 1 VALUE 'Y',
+      END OF mark.
+    CONSTANTS all_correct TYPE zanvg_t_guess-result_pattern VALUE 'GGGGG'.
+    CONSTANTS all_absent TYPE zanvg_t_guess-result_pattern VALUE 'XXXXX'.
+
     METHODS is_won
       IMPORTING pattern       TYPE zanvg_t_guess-result_pattern
       RETURNING VALUE(result) TYPE abap_boolean.
@@ -42,15 +53,13 @@ ENDCLASS.
 CLASS zcl_anvg_wordle IMPLEMENTATION.
 
   METHOD is_won.
-    IF pattern = 'GGGGG'.
-      result = abap_true.
-    ENDIF.
+    result = xsdbool( pattern = all_correct ).
   ENDMETHOD.
 
   METHOD status_after_guess.
     IF is_won( pattern ).
       result = game_status-won.
-    ELSEIF attempt_number >= 6.
+    ELSEIF attempt_number >= max_attempts.
       result = game_status-lost.
     ELSE.
       result = game_status-in_progress.
@@ -62,39 +71,36 @@ CLASS zcl_anvg_wordle IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD evaluate_guess.
-    result = 'XXXXX'.
+    result = all_absent.
     DATA(unused) = secret.
     DATA pos TYPE i.
 
-    DO 5 TIMES.
+    DO word_length TIMES.
       pos = sy-index - 1.
       IF guess+pos(1) = secret+pos(1).
-        result+pos(1) = 'G'.
-        unused+pos(1) = '-'.
+        result+pos(1) = mark-correct.
+        unused+pos(1) = crossed_off.
       ENDIF.
     ENDDO.
 
-    DO 5 TIMES.
+    DO word_length TIMES.
       pos = sy-index - 1.
-      IF result+pos(1) = 'G'.
+      IF result+pos(1) = mark-correct.
         CONTINUE.
       ENDIF.
       DATA(offset) = find( val = unused sub = guess+pos(1) ).
       IF offset >= 0.
-        result+pos(1) = 'Y'.
-        unused+offset(1) = '-'.
+        result+pos(1) = mark-misplaced.
+        unused+offset(1) = crossed_off.
       ENDIF.
     ENDDO.
   ENDMETHOD.
 
   METHOD is_valid_word.
-    SELECT SINGLE word
-        FROM zanvg_t_word
-        WHERE word = @guess_word
-        INTO @DATA(found_word).
-    IF sy-subrc = 0.
-      result = abap_true.
-    ENDIF.
+    SELECT SINGLE @abap_true
+      FROM zanvg_t_word
+      WHERE word = @guess_word
+      INTO @result.
   ENDMETHOD.
 
   METHOD pick_secret_word.

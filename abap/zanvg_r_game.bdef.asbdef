@@ -11,27 +11,25 @@ etag master LocalLastChangedAt
   internal update;
   delete;
   association _Guess { internal create; }
-
   determination setDefaults on modify { create; }
-
   action SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
 
   field ( readonly, numbering : managed ) GameId;
-  field ( readonly ) SecretWord, Solution, Status, Attempts, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( readonly ) SecretWord, Status, Attempts, Solution, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
 
   mapping for zanvg_t_game
-  {
-    GameId             = game_id;
-    Player             = player;
-    SecretWord         = secret_word;
-    Status             = status;
-    Attempts           = attempts;
-    CreatedBy          = created_by;
-    CreatedAt          = created_at;
-    LastChangedBy      = last_changed_by;
-    LastChangedAt      = last_changed_at;
-    LocalLastChangedAt = local_last_changed_at;
-  }
+    {
+      GameId             = game_id;
+      Player             = player;
+      SecretWord         = secret_word;
+      Status             = status;
+      Attempts           = attempts;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+      LocalLastChangedAt = local_last_changed_at;
+    }
 }
 
 define behavior for ZANVG_R_GUESS alias Guess
@@ -45,10 +43,10 @@ etag dependent by _Game
   field ( readonly ) GameId;
 
   mapping for zanvg_t_guess
-  {
-    GameId        = game_id;
-    AttemptNo     = attempt_no;
-    Guess         = guess;
-    ResultPattern = result_pattern;
-  }
+    {
+      GameId        = game_id;
+      AttemptNo     = attempt_no;
+      Guess         = guess;
+      ResultPattern = result_pattern;
+    }
 }

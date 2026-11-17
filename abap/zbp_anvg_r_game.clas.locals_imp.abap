@@ -6,7 +6,7 @@ CLASS lhc_Game DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS setDefaults FOR DETERMINE ON MODIFY
       IMPORTING keys FOR Game~setDefaults.
     METHODS SubmitGuess FOR MODIFY
-      keys FOR ACTION Game~SubmitGuess RESULT result.
+       keys FOR ACTION Game~SubmitGuess RESULT result.
 
 ENDCLASS.
 
@@ -39,19 +39,13 @@ CLASS lhc_Game IMPLEMENTATION.
       DATA(game) = games[ GameId = key-GameId ].
       DATA(guess) = wordle->normalize_guess( CONV #( key-%param-Guess ) ).
 
-      IF game-Status <> zcl_anvg_wordle=>game_status-in_progress.
+      DATA(error) = COND string( WHEN game-Status <> zcl_anvg_wordle=>game_status-in_progress THEN `Game is over`
+                                 WHEN NOT wordle->is_valid_word( guess )                       THEN `Not in word list` ).
+      IF error IS NOT INITIAL.
         APPEND VALUE #( %tky = game-%tky ) TO failed-game.
         APPEND VALUE #( %tky = game-%tky
                         %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
-                                                      text     = 'Game is over' ) ) TO reported-game.
-        CONTINUE.
-      ENDIF.
-
-      IF NOT wordle->is_valid_word( guess ).
-        APPEND VALUE #( %tky = game-%tky ) TO failed-game.
-        APPEND VALUE #( %tky = game-%tky
-                        %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
-                                                      text     = 'Not in word list' ) ) TO reported-game.
+                                                      text     = error ) ) TO reported-game.
         CONTINUE.
       ENDIF.
 
