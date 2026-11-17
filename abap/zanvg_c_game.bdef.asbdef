@@ -1,0 +1,19 @@
+projection;
+strict ( 2 );
+
+define behavior for ZANVG_C_GAME alias Game
+use etag
+{
+  use create;
+  use delete;
+  use action SubmitGuess;
+
+  use association _Guess;
+}
+
+define behavior for ZANVG_C_GUESS alias Guess
+use etag
+{
+
+  use association _Game;
+}

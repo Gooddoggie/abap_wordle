@@ -1,0 +1,54 @@
+managed implementation in class zbp_anvg_r_game unique;
+strict ( 2 );
+
+define behavior for ZANVG_R_GAME alias Game
+persistent table zanvg_t_game
+lock master
+authorization master ( global )
+etag master LocalLastChangedAt
+{
+  create;
+  internal update;
+  delete;
+  association _Guess { internal create; }
+
+  determination setDefaults on modify { create; }
+
+  action SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
+
+  field ( readonly, numbering : managed ) GameId;
+  field ( readonly ) SecretWord, Solution, Status, Attempts, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  mapping for zanvg_t_game
+  {
+    GameId             = game_id;
+    Player             = player;
+    SecretWord         = secret_word;
+    Status             = status;
+    Attempts           = attempts;
+    CreatedBy          = created_by;
+    CreatedAt          = created_at;
+    LastChangedBy      = last_changed_by;
+    LastChangedAt      = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}
+
+define behavior for ZANVG_R_GUESS alias Guess
+persistent table zanvg_t_guess
+lock dependent by _Game
+authorization dependent by _Game
+etag dependent by _Game
+{
+  association _Game;
+
+  field ( readonly ) GameId;
+
+  mapping for zanvg_t_guess
+  {
+    GameId        = game_id;
+    AttemptNo     = attempt_no;
+    Guess         = guess;
+    ResultPattern = result_pattern;
+  }
+}

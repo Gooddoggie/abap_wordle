@@ -1,0 +1,9 @@
+docs/
+.solutions/
+*.md
+!README.md
+
+.DS_Store
+.vscode/
+.idea/
+*.swp
