@@ -1,5 +1,6 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Guess'
+@Metadata.allowExtensions: true
 define view entity ZANVG_C_GUESS
   as projection on ZANVG_R_GUESS
 {

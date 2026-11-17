@@ -1,0 +1,19 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'Guess',
+                  typeNamePlural: 'Guesses',
+                  title: { value: 'Guess' } }
+annotate entity ZANVG_C_GUESS with
+{
+  @UI.facet: [ { id: 'Guess', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Guess', position: 10 } ]
+  @UI.hidden: true
+  GameId;
+
+  @UI: { lineItem: [ { position: 10, label: 'Attempt' } ], identification: [ { position: 10, label: 'Attempt' } ] }
+  AttemptNo;
+
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  Guess;
+
+  @UI: { lineItem: [ { position: 30, label: 'Result' } ], identification: [ { position: 30, label: 'Result' } ] }
+  ResultPattern;
+}

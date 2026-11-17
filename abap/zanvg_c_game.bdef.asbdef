@@ -1,5 +1,6 @@
 projection;
 strict ( 2 );
+use side effects;
 
 define behavior for ZANVG_C_GAME alias Game
 use etag

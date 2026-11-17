@@ -14,6 +14,11 @@ etag master LocalLastChangedAt
   determination setDefaults on modify { create; }
   action SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
 
+  side effects
+  {
+    action SubmitGuess affects field Status, field Attempts, field Solution, entity _Guess;
+  }
+
   field ( readonly, numbering : managed ) GameId;
   field ( readonly ) SecretWord, Status, Attempts, Solution, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
 

@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'Game',
+                  typeNamePlural: 'Games',
+                  title: { value: 'Player' } }
+annotate entity ZANVG_C_GAME with
+{
+  @UI.facet: [ { id: 'Game',     purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Game',    position: 10 },
+               { id: 'Guesses',  purpose: #STANDARD, type: #LINEITEM_REFERENCE,       label: 'Guesses', position: 20, targetElement: '_Guess' } ]
+  @UI.hidden: true
+  GameId;
+
+  @UI: { lineItem:       [ { position: 10 },
+                           { type: #FOR_ACTION, dataAction: 'SubmitGuess', label: 'Submit Guess' } ],
+         identification: [ { position: 10 },
+                           { type: #FOR_ACTION, dataAction: 'SubmitGuess', label: 'Submit Guess' } ],
+         selectionField: [ { position: 10 } ] }
+  Player;
+
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  Status;
+
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  Attempts;
+
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  Solution;
+
+  @UI: { lineItem: [ { position: 50 } ] }
+  CreatedAt;
+}
