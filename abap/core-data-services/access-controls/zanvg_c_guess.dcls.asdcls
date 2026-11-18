@@ -1,0 +1,6 @@
+@EndUserText.label: 'Guess projection'
+@MappingRole: true
+define role ZANVG_C_GUESS {
+  grant select on ZANVG_C_GUESS
+    where inheriting conditions from entity ZANVG_R_GUESS;
+}

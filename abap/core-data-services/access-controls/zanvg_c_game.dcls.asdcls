@@ -1,0 +1,6 @@
+@EndUserText.label: 'Game projection'
+@MappingRole: true
+define role ZANVG_C_GAME {
+  grant select on ZANVG_C_GAME
+    where inheriting conditions from entity ZANVG_R_GAME;
+}

@@ -12,12 +12,12 @@ etag master LocalLastChangedAt
   delete;
   association _Guess { internal create; }
   determination setDefaults on modify { create; }
-  action SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
+  action ( features : instance ) SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
   static factory action StartGame parameter ZANVG_D_PLAYER [1];
 
   side effects
   {
-    action SubmitGuess affects field Status, field StatusText, field StatusCriticality, field Attempts, field Lives, field Score, field Solution, entity _Guess;
+    action SubmitGuess affects field Status, field StatusText, field StatusCriticality, field Attempts, field Lives, field Score, field Solution, entity _Guess, permissions ( action SubmitGuess );
   }
 
   field ( readonly, numbering : managed ) GameId;

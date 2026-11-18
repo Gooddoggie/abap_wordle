@@ -1,0 +1,6 @@
+@EndUserText.label: 'Game'
+@MappingRole: true
+define role ZANVG_R_GAME {
+  grant select on ZANVG_R_GAME
+    where CreatedBy = aspect user;
+}

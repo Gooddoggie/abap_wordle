@@ -1,4 +1,4 @@
-@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Game'
 @Metadata.allowExtensions: true
 define root view entity ZANVG_C_GAME

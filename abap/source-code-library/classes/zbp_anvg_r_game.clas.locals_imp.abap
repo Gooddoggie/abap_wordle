@@ -3,10 +3,12 @@ CLASS lhc_Game DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
       REQUEST requested_authorizations FOR Game RESULT result.
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR Game RESULT result.
     METHODS setDefaults FOR DETERMINE ON MODIFY
       IMPORTING keys FOR Game~setDefaults.
     METHODS SubmitGuess FOR MODIFY
-       keys FOR ACTION Game~SubmitGuess RESULT result.
+      IMPORTING keys FOR ACTION Game~SubmitGuess RESULT result.
     METHODS StartGame FOR MODIFY
       IMPORTING keys FOR ACTION Game~StartGame.
 
@@ -15,6 +17,20 @@ ENDCLASS.
 CLASS lhc_Game IMPLEMENTATION.
 
   METHOD get_global_authorizations.
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+    READ ENTITIES OF zanvg_r_game IN LOCAL MODE
+      ENTITY Game
+        FIELDS ( Status )
+        WITH CORRESPONDING #( keys )
+      RESULT DATA(games).
+
+    result = VALUE #( FOR game IN games
+                      ( %tky                = game-%tky
+                        %action-SubmitGuess = COND #( WHEN game-Status = zcl_anvg_wordle=>game_status-in_progress
+                                                      THEN if_abap_behv=>fc-o-enabled
+                                                      ELSE if_abap_behv=>fc-o-disabled ) ) ).
   ENDMETHOD.
 
   METHOD setDefaults.

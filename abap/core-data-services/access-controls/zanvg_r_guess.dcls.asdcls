@@ -1,0 +1,6 @@
+@EndUserText.label: 'Guess'
+@MappingRole: true
+define role ZANVG_R_GUESS {
+  grant select on ZANVG_R_GUESS
+    where _Game.CreatedBy = aspect user;
+}

@@ -1,4 +1,4 @@
-@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Guess'
 define view entity ZANVG_R_GUESS
   as select from zanvg_t_guess
