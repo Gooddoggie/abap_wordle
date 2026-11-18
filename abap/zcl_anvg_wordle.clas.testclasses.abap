@@ -23,7 +23,7 @@ CLASS ltc_status_after_guess IMPLEMENTATION.
       exp = zcl_anvg_wordle=>game_status-won
       act = game->status_after_guess( pattern = 'GGGGG' attempt_number = 3 ) ).
   ENDMETHOD.
-1
+
   METHOD win_on_last_attempt.
     cl_abap_unit_assert=>assert_equals(
       exp = zcl_anvg_wordle=>game_status-won
@@ -209,5 +209,106 @@ CLASS ltc_pick_secret_word IMPLEMENTATION.
 
   METHOD no_answers_gives_blank.
     cl_abap_unit_assert=>assert_initial( act = game->pick_secret_word( ) ).
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS ltc_state_after_guess DEFINITION FINAL
+  FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS.
+
+  PRIVATE SECTION.
+    CLASS-DATA sql_environment TYPE REF TO if_osql_test_environment.
+    DATA game TYPE REF TO zcl_anvg_wordle.
+
+    CLASS-METHODS class_setup.
+    CLASS-METHODS class_teardown.
+    METHODS setup.
+    METHODS classic_miss_costs_a_life        FOR TESTING.
+    METHODS classic_win_ends_with_score      FOR TESTING.
+    METHODS endless_miss_costs_a_life        FOR TESTING.
+    METHODS endless_miss_on_last_life_lost   FOR TESTING.
+    METHODS endless_win_bonus_and_new_word FOR TESTING.
+
+    METHODS running_game
+      IMPORTING mode          TYPE zanvg_t_game-game_mode
+                lives         TYPE zanvg_t_game-lives
+      RETURNING VALUE(result) TYPE zcl_anvg_wordle=>game_state.
+ENDCLASS.
+
+CLASS ltc_state_after_guess IMPLEMENTATION.
+  METHOD class_setup.
+    sql_environment = cl_osql_test_environment=>create( i_dependency_list = VALUE #( ( 'ZANVG_T_WORD' ) ) ).
+  ENDMETHOD.
+
+  METHOD class_teardown.
+    sql_environment->destroy( ).
+  ENDMETHOD.
+
+  METHOD setup.
+    DATA words TYPE STANDARD TABLE OF zanvg_t_word WITH EMPTY KEY.
+    words = VALUE #( ( word = 'HOTEL' is_answer = abap_true ) ).
+    sql_environment->clear_doubles( ).
+    sql_environment->insert_test_data( words ).
+    game = NEW #( ).
+  ENDMETHOD.
+
+  METHOD running_game.
+    result = VALUE #( mode        = mode
+                      secret_word = 'CRANE'
+                      status      = zcl_anvg_wordle=>game_status-in_progress
+                      attempts    = 2
+                      lives       = lives
+                      score       = 1 ).
+  ENDMETHOD.
+
+  METHOD classic_miss_costs_a_life.
+    DATA(after) = game->state_after_guess( before  = running_game( mode  = zcl_anvg_wordle=>game_mode-classic
+                                                                   lives = 4 )
+                                           pattern = 'XXYXX' ).
+
+    cl_abap_unit_assert=>assert_equals( exp = 3 act = after-lives ).
+    cl_abap_unit_assert=>assert_equals( exp = 3 act = after-attempts ).
+    cl_abap_unit_assert=>assert_equals( exp = zcl_anvg_wordle=>game_status-in_progress act = after-status ).
+  ENDMETHOD.
+
+  METHOD classic_win_ends_with_score.
+    DATA(after) = game->state_after_guess( before  = running_game( mode  = zcl_anvg_wordle=>game_mode-classic
+                                                                   lives = 4 )
+                                           pattern = 'GGGGG' ).
+
+    cl_abap_unit_assert=>assert_equals( exp = zcl_anvg_wordle=>game_status-won act = after-status ).
+    cl_abap_unit_assert=>assert_equals( exp = 2 act = after-score ).
+    cl_abap_unit_assert=>assert_equals( exp = 'CRANE' act = after-secret_word ).
+  ENDMETHOD.
+
+  METHOD endless_miss_costs_a_life.
+    DATA(after) = game->state_after_guess( before  = running_game( mode  = zcl_anvg_wordle=>game_mode-endless
+                                                                   lives = 3 )
+                                           pattern = 'XXYXX' ).
+
+    cl_abap_unit_assert=>assert_equals( exp = 2 act = after-lives ).
+    cl_abap_unit_assert=>assert_equals( exp = zcl_anvg_wordle=>game_status-in_progress act = after-status ).
+    cl_abap_unit_assert=>assert_equals( exp = 'CRANE' act = after-secret_word ).
+  ENDMETHOD.
+
+  METHOD endless_miss_on_last_life_lost.
+    DATA(after) = game->state_after_guess( before  = running_game( mode  = zcl_anvg_wordle=>game_mode-endless
+                                                                   lives = 1 )
+                                           pattern = 'XXYXX' ).
+
+    cl_abap_unit_assert=>assert_equals( exp = 0 act = after-lives ).
+    cl_abap_unit_assert=>assert_equals( exp = zcl_anvg_wordle=>game_status-lost act = after-status ).
+  ENDMETHOD.
+
+  METHOD endless_win_bonus_and_new_word.
+    DATA(after) = game->state_after_guess( before  = running_game( mode  = zcl_anvg_wordle=>game_mode-endless
+                                                                   lives = 1 )
+                                           pattern = 'GGGGG' ).
+
+    cl_abap_unit_assert=>assert_equals( exp = 4 act = after-lives ).
+    cl_abap_unit_assert=>assert_equals( exp = 2 act = after-score ).
+    cl_abap_unit_assert=>assert_equals( exp = 'HOTEL' act = after-secret_word ).
+    cl_abap_unit_assert=>assert_equals( exp = zcl_anvg_wordle=>game_status-in_progress act = after-status ).
   ENDMETHOD.
 ENDCLASS.

@@ -10,7 +10,10 @@ define table zanvg_t_game {
   player                : abap.char(30);
   secret_word           : abap.char(5);
   status                : abap.char(1);
-  attempts              : abap.int1;
+  attempts              : abap.int2;
+  game_mode             : abap.char(1);
+  lives                 : abap.int2;
+  score                 : abap.int2;
   created_by            : abp_creation_user;
   created_at            : abp_creation_tstmpl;
   last_changed_by       : abp_lastchange_user;

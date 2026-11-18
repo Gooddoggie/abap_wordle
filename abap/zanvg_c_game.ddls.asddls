@@ -8,8 +8,16 @@ define root view entity ZANVG_C_GAME
   key GameId,
       Player,
       Solution,
+      @ObjectModel.text.element: [ 'StatusText' ]
       Status,
+      StatusText,
+      StatusCriticality,
+      @ObjectModel.text.element: [ 'GameModeText' ]
+      GameMode,
+      GameModeText,
       Attempts,
+      Lives,
+      Score,
       CreatedBy,
       CreatedAt,
       LastChangedBy,

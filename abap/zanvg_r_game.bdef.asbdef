@@ -13,14 +13,16 @@ etag master LocalLastChangedAt
   association _Guess { internal create; }
   determination setDefaults on modify { create; }
   action SubmitGuess parameter ZANVG_D_GUESS result [1] $self;
+  static factory action StartGame parameter ZANVG_D_PLAYER [1];
 
   side effects
   {
-    action SubmitGuess affects field Status, field Attempts, field Solution, entity _Guess;
+    action SubmitGuess affects field Status, field StatusText, field StatusCriticality, field Attempts, field Lives, field Score, field Solution, entity _Guess;
   }
 
   field ( readonly, numbering : managed ) GameId;
-  field ( readonly ) SecretWord, Status, Attempts, Solution, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( readonly ) SecretWord, Status, StatusText, StatusCriticality, GameModeText, Attempts, Lives, Score, Solution, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( readonly : update ) GameMode;
 
   mapping for zanvg_t_game
     {
@@ -28,7 +30,10 @@ etag master LocalLastChangedAt
       Player             = player;
       SecretWord         = secret_word;
       Status             = status;
+      GameMode           = game_mode;
       Attempts           = attempts;
+      Lives              = lives;
+      Score              = score;
       CreatedBy          = created_by;
       CreatedAt          = created_at;
       LastChangedBy      = last_changed_by;

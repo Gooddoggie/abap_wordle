@@ -9,6 +9,7 @@ use etag
   use create;
   use delete;
   use action SubmitGuess;
+  use action StartGame;
 
 
   use association _Guess;

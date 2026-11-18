@@ -7,6 +7,8 @@ CLASS lhc_Game DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys FOR Game~setDefaults.
     METHODS SubmitGuess FOR MODIFY
        keys FOR ACTION Game~SubmitGuess RESULT result.
+    METHODS StartGame FOR MODIFY
+      IMPORTING keys FOR ACTION Game~StartGame.
 
 ENDCLASS.
 
@@ -20,10 +22,11 @@ CLASS lhc_Game IMPLEMENTATION.
 
     MODIFY ENTITIES OF zanvg_r_game IN LOCAL MODE
       ENTITY Game
-        UPDATE FIELDS ( SecretWord Status )
+        UPDATE FIELDS ( SecretWord Status Lives )
         WITH VALUE #( FOR key IN keys ( %tky       = key-%tky
                                         SecretWord = wordle->pick_secret_word( )
-                                        Status     = zcl_anvg_wordle=>game_status-in_progress ) ).
+                                        Status     = zcl_anvg_wordle=>game_status-in_progress
+                                        Lives      = zcl_anvg_wordle=>start_lives ) ).
   ENDMETHOD.
 
   METHOD SubmitGuess.
@@ -31,7 +34,7 @@ CLASS lhc_Game IMPLEMENTATION.
 
     READ ENTITIES OF zanvg_r_game IN LOCAL MODE
       ENTITY Game
-        FIELDS ( SecretWord Status Attempts )
+        FIELDS ( GameMode SecretWord Status Attempts Lives Score )
         WITH CORRESPONDING #( keys )
       RESULT DATA(games).
 
@@ -49,22 +52,25 @@ CLASS lhc_Game IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      DATA(attempt_no) = game-Attempts + 1.
       DATA(pattern) = wordle->evaluate_guess( guess = guess secret = game-SecretWord ).
-      DATA(status) = wordle->status_after_guess( pattern = pattern attempt_number = attempt_no ).
+      DATA(after) = wordle->state_after_guess( before  = CORRESPONDING #( game MAPPING mode = GameMode secret_word = SecretWord )
+                                               pattern = pattern ).
 
       MODIFY ENTITIES OF zanvg_r_game IN LOCAL MODE
         ENTITY Game
-          UPDATE FIELDS ( Status Attempts )
-          WITH VALUE #( ( %tky     = game-%tky
-                          Status   = status
-                          Attempts = attempt_no ) )
+          UPDATE FIELDS ( SecretWord Status Attempts Lives Score )
+          WITH VALUE #( ( %tky       = game-%tky
+                          SecretWord = after-secret_word
+                          Status     = after-status
+                          Attempts   = after-attempts
+                          Lives      = after-lives
+                          Score      = after-score ) )
         ENTITY Game
           CREATE BY \_Guess
           FIELDS ( AttemptNo Guess ResultPattern )
           WITH VALUE #( ( %tky    = game-%tky
                           %target = VALUE #( ( %cid          = 'GUESS'
-                                               AttemptNo     = attempt_no
+                                               AttemptNo     = after-attempts
                                                Guess         = guess
                                                ResultPattern = pattern ) ) ) ).
     ENDLOOP.
@@ -76,6 +82,18 @@ CLASS lhc_Game IMPLEMENTATION.
 
     result = VALUE #( FOR updated IN updated_games ( %tky   = updated-%tky
                                                      %param = updated ) ).
+  ENDMETHOD.
+
+  METHOD StartGame.
+    MODIFY ENTITIES OF zanvg_r_game IN LOCAL MODE
+      ENTITY Game
+        CREATE FIELDS ( Player GameMode )
+        WITH VALUE #( FOR key IN keys ( %cid     = key-%cid
+                                        Player   = key-%param-Player
+                                        GameMode = COND #( WHEN key-%param-Endless = abap_true
+                                                           THEN zcl_anvg_wordle=>game_mode-endless
+                                                           ELSE zcl_anvg_wordle=>game_mode-classic ) ) )
+      MAPPED mapped.
   ENDMETHOD.
 
 ENDCLASS.

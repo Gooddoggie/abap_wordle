@@ -10,21 +10,44 @@ annotate entity ZANVG_C_GAME with
   GameId;
 
   @UI: { lineItem:       [ { position: 10 },
+                           { type: #FOR_ACTION, dataAction: 'StartGame', label: 'Play' },
                            { type: #FOR_ACTION, dataAction: 'SubmitGuess', label: 'Submit Guess' } ],
          identification: [ { position: 10 },
                            { type: #FOR_ACTION, dataAction: 'SubmitGuess', label: 'Submit Guess' } ],
          selectionField: [ { position: 10 } ] }
   Player;
 
-  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  @UI: { lineItem:       [ { position: 20 } ],
+         identification: [ { position: 20 } ],
+         textArrangement: #TEXT_ONLY }
+  GameMode;
+
+  @UI: { lineItem:       [ { position: 30, criticality: 'StatusCriticality' } ],
+         identification: [ { position: 30, criticality: 'StatusCriticality' } ],
+         textArrangement: #TEXT_ONLY }
   Status;
 
-  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  Lives;
+
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  Score;
+
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
   Attempts;
 
-  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
   Solution;
 
-  @UI: { lineItem: [ { position: 50 } ] }
+  @UI: { lineItem: [ { position: 80 } ] }
   CreatedAt;
+
+  @UI.hidden: true
+  StatusText;
+
+  @UI.hidden: true
+  StatusCriticality;
+
+  @UI.hidden: true
+  GameModeText;
 }
