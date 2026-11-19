@@ -1,5 +1,7 @@
 @EndUserText.label: 'Wordle service'
 define service ZANVG_UI_WORDLE {
-  expose ZANVG_C_GAME  as Games;
-  expose ZANVG_C_GUESS as Guesses;
+  expose ZANVG_C_GAME          as Games;
+  expose ZANVG_C_GUESS         as Guesses;
+  expose ZANVG_R_CLASSIC_STATS as MyStats;
+  expose ZANVG_R_ENDLESS_BOARD as EndlessBoard;
 }

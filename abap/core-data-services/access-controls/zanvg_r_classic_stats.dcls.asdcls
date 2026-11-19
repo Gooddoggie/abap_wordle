@@ -1,0 +1,6 @@
+@EndUserText.label: 'Classic stats'
+@MappingRole: true
+define role ZANVG_R_CLASSIC_STATS {
+  grant select on ZANVG_R_CLASSIC_STATS
+    where CreatedBy = aspect user;
+}

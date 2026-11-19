@@ -1,0 +1,21 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'Player',
+                  typeNamePlural: 'Endless leaderboard',
+                  title: { value: 'Player' } }
+@UI.presentationVariant: [ { sortOrder: [ { by: 'BestRun',     direction: #DESC },
+                                          { by: 'WordsSolved', direction: #DESC } ],
+                             visualizations: [ { type: #AS_LINEITEM } ] } ]
+annotate entity ZANVG_R_ENDLESS_BOARD with
+{
+  @UI.lineItem: [ { position: 10 } ]
+  Player;
+
+  @UI.lineItem: [ { position: 20 } ]
+  BestRun;
+
+  @UI.lineItem: [ { position: 30 } ]
+  WordsSolved;
+
+  @UI.lineItem: [ { position: 40 } ]
+  Runs;
+}

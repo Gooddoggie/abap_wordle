@@ -1,0 +1,18 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'My stats',
+                  typeNamePlural: 'My stats',
+                  title: { value: 'CreatedBy' } }
+annotate entity ZANVG_R_CLASSIC_STATS with
+{
+  @UI.lineItem: [ { position: 10 } ]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 20 } ]
+  Games;
+
+  @UI.lineItem: [ { position: 30 } ]
+  WinRate;
+
+  @UI.lineItem: [ { position: 40 } ]
+  Wins;
+}
