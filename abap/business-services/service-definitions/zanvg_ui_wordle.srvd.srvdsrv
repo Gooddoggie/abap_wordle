@@ -4,4 +4,5 @@ define service ZANVG_UI_WORDLE {
   expose ZANVG_C_GUESS         as Guesses;
   expose ZANVG_R_CLASSIC_STATS as MyStats;
   expose ZANVG_R_ENDLESS_BOARD as EndlessBoard;
+  expose ZANVG_R_STREAK_BOARD  as StreakBoard;
 }

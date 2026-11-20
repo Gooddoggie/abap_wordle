@@ -1,0 +1,18 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'Player',
+                  typeNamePlural: 'Streak leaderboard',
+                  title: { value: 'Player' } }
+@UI.presentationVariant: [ { sortOrder: [ { by: 'MaxStreak',     direction: #DESC },
+                                          { by: 'CurrentStreak', direction: #DESC } ],
+                             visualizations: [ { type: #AS_LINEITEM } ] } ]
+annotate entity ZANVG_R_STREAK_BOARD with
+{
+  @UI.lineItem: [ { position: 10 } ]
+  Player;
+
+  @UI.lineItem: [ { position: 20 } ]
+  MaxStreak;
+
+  @UI.lineItem: [ { position: 30 } ]
+  CurrentStreak;
+}
